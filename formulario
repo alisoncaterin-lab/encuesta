@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formularios – Rompiendo Fronteras</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      padding: 40px 16px;
+    }
+
+    :root {
+      --rf-pink: #DB5073;
+      --rf-pink-dark: #b83d5c;
+      --rf-blue: #3D5A98;
+      --rf-lblue: #B5DDF5;
+      --rf-steel: #B0C1D4;
+      --rf-gray: #D9D9D9;
+    }
+
+    .rf-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 2rem 2.5rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    }
+
+    /* ---- TABS ---- */
+    .tabs {
+      display: flex;
+      border-bottom: 1.5px solid var(--rf-gray);
+      margin-bottom: 2rem;
+    }
+
+    .tab {
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: #888;
+      border-bottom: 2.5px solid transparent;
+      margin-bottom: -1.5px;
+      transition: color .15s;
+      font-family: inherit;
+    }
+
+    .tab.active {
+      color: var(--rf-pink);
+      border-bottom-color: var(--rf-pink);
+    }
+
+    /* ---- PANELS ---- */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ---- FORM GRID ---- */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 540px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ---- FIELDS ---- */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #555;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      border: 1px solid var(--rf-gray);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: #333;
+      background: #fff;
+      outline: none;
+      transition: border-color .15s;
+      font-family: inherit;
+      width: 100%;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: var(--rf-pink);
+    }
+
+    .field textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .field select { cursor: pointer; }
+
+    /* ---- STARS ---- */
+    .star-row { display: flex; gap: 6px; }
+
+    .star {
+      font-size: 28px;
+      color: var(--rf-gray);
+      cursor: pointer;
+      transition: color .1s;
+      line-height: 1;
+      user-select: none;
+    }
+
+    .star.lit { color: var(--rf-pink); }
+
+    .rating-label {
+      font-size: 13px;
+      color: #888;
+      margin-top: 6px;
+    }
+
+    /* ---- CONSENT ---- */
+    .consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .consent input[type=checkbox] {
+      margin-top: 2px;
+      accent-color: var(--rf-pink);
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .consent span {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    /* ---- BUTTON ---- */
+    .btn-rf {
+      background: var(--rf-pink);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 28px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+      width: 100%;
+      margin-top: 16px;
+      font-family: inherit;
+      letter-spacing: .02em;
+    }
+
+    .btn-rf:hover { background: var(--rf-pink-dark); }
+
+    /* ---- DIVIDER ---- */
+    .divider {
+      height: 1px;
+      background: var(--rf-gray);
+      margin: 20px 0;
+      opacity: .5;
+    }
+
+    /* ---- SECTION TITLE ---- */
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--rf-blue);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 16px;
+    }
+
+    /* ---- SUCCESS MESSAGE ---- */
+    .success-msg {
+      display: none;
+      background: #eaf6ee;
+      border: 1px solid #8dd1a3;
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 14px;
+      color: #1a6b35;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="rf-wrap">
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active"
+onclick="switchTab('contact')">Formulario de contacto</button>
+    <button class="tab" onclick="switchTab('testimony')">Déjanos tu
+testimonio</button>
+  </div>
+
+  <!-- ==================== CONTACTO ==================== -->
+  <div id="panel-contact" class="panel active">
+
+    <p class="section-title">¿Tienes alguna pregunta?</p>
+
+    <div class="form-grid">
+      <div class="field">
+        <label for="c-name">Nombre *</label>
+        <input type="text" id="c-name" placeholder="Tu nombre" />
+      </div>
+      <div class="field">
+        <label for="c-last">Apellido *</label>
+        <input type="text" id="c-last" placeholder="Tu apellido" />
+      </div>
+      <div class="field">
+        <label for="c-email">Correo electrónico *</label>
+        <input type="email" id="c-email" placeholder="correo@ejemplo.com" />
+      </div>
+      <div class="field">
+        <label for="c-country">País</label>
+        <input type="text" id="c-country" placeholder="Colombia, México..." />
+      </div>
+      <div class="field">
+        <label for="c-role">Profesión / Especialidad</label>
+        <input type="text" id="c-role" placeholder="Ej. Enfermera,
+Cirujano..." />
+      </div>
+      <div class="field">
+        <label for="c-area">Área de interés</label>
+        <select id="c-area">
+          <option value="">Selecciona un área...</option>
+          <option>Cuidado crítico adulto y pediátrico</option>
+          <option>Cirugía cardiovascular</option>
+          <option>Perfusión</option>
+          <option>ECMO</option>
+          <option>Anestesia cardiovascular</option>
+          <option>Coaching en salud</option>
+          <option>Educación en salud</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom:16px;">
+      <label for="c-msg">Mensaje *</label>
+      <textarea id="c-msg" placeholder="¿En qué podemos ayudarte?"></textarea>
+    </div>
+
+    <div class="consent" style="margin-bottom:16px;">
+      <input type="checkbox" id="c-consent" />
+      <span>Autorizo el tratamiento de mis datos personales según la
+política de privacidad de Rompiendo Fronteras.</span>
+    </div>
+
+    <button class="btn-rf" onclick="submitContact()">Enviar mensaje</button>
+
+    <div class="success-msg" id="c-success">
+      ✓ ¡Mensaje enviado! Nos pondremos en contacto contigo pronto.
+    </div>
+
+  </div>
+
+  <!-- ==================== TESTIMONIO ==================== -->
+  <div id="panel-testimony" class="panel">
+
+    <p class="section-title">Tu experiencia nos inspira</p>
+
+    <div class="form-grid">
+      <div class="field">
+        <label for="t-name">Nombre *</label>
+        <input type="text" id="t-name" placeholder="Tu nombre" />
+      </div>
+      <div class="field">
+        <label for="t-role">Profesión</label>
+        <input type="text" id="t-role" placeholder="Ej. Perfusionista" />
+      </div>
+      <div class="field">
+        <label for="t-country">País</label>
+        <input type="text" id="t-country" placeholder="Tu país" />
+      </div>
+      <div class="field">
+        <label for="t-course">Curso o programa</label>
+        <select id="t-course">
+          <option value="">¿Qué curso tomaste?</option>
+          <option>Cuidado crítico adulto y pediátrico</option>
+          <option>Cirugía cardiovascular</option>
+          <option>Perfusión</option>
+          <option>ECMO</option>
+          <option>Anestesia cardiovascular</option>
+          <option>Coaching en salud</option>
+          <option>Educación en salud</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom:8px;">
+      <label>Tu calificación *</label>
+      <div class="star-row" id="stars">
+        <span class="star" onclick="rate(1)">★</span>
+        <span class="star" onclick="rate(2)">★</span>
+        <span class="star" onclick="rate(3)">★</span>
+        <span class="star" onclick="rate(4)">★</span>
+        <span class="star" onclick="rate(5)">★</span>
+      </div>
+      <div class="rating-label" id="rating-label">Selecciona de 1 a 5
+estrellas</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field" style="margin-bottom:16px;">
+      <label for="t-msg">Tu testimonio *</label>
+      <textarea id="t-msg" style="min-height:120px;"
+        placeholder="Cuéntanos cómo Rompiendo Fronteras impactó tu
+desarrollo profesional..."></textarea>
+    </div>
+
+    <div class="consent" style="margin-bottom:8px;">
+      <input type="checkbox" id="t-photo" />
+      <span>Acepto que mi testimonio pueda ser publicado en las redes
+sociales de Rompiendo Fronteras.</span>
+    </div>
+    <div class="consent" style="margin-bottom:16px;">
+      <input type="checkbox" id="t-consent" />
+      <span>Autorizo el tratamiento de mis datos personales según la
+política de privacidad de Rompiendo Fronteras.</span>
+    </div>
+
+    <button class="btn-rf" onclick="submitTestimony()">Enviar
+testimonio</button>
+
+    <div class="success-msg" id="t-success">
+      ✓ ¡Gracias por tu testimonio! Tu experiencia inspira a toda la comunidad.
+    </div>
+
+  </div>
+
+</div><!-- /rf-wrap -->
+
+<script>
+  let currentRating = 0;
+  const ratingLabels = ['', 'Muy malo', 'Regular', 'Bueno', 'Muy
+bueno', 'Excelente'];
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach(t =>
+t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p =>
+p.classList.remove('active'));
+    const idx = tab === 'contact' ? 0 : 1;
+    document.querySelectorAll('.tab')[idx].classList.add('active');
+    document.getElementById('panel-' + tab).classList.add('active');
+  }
+
+  function rate(n) {
+    currentRating = n;
+    document.querySelectorAll('.star').forEach((s, i) => {
+      s.classList.toggle('lit', i < n);
+    });
+    document.getElementById('rating-label').textContent = ratingLabels[n];
+  }
+
+  function submitContact() {
+    const name    = document.getElementById('c-name').value.trim();
+    const email   = document.getElementById('c-email').value.trim();
+    const msg     = document.getElementById('c-msg').value.trim();
+    const consent = document.getElementById('c-consent').checked;
+
+    if (!name || !email || !msg || !consent) {
+      alert('Por favor completa los campos obligatorios (*) y acepta
+la política de privacidad.');
+      return;
+    }
+
+    /*
+      ── INTEGRACIÓN ──────────────────────────────────────────────
+      Aquí puedes conectar con tu backend, EmailJS, Formspree, etc.
+      Ejemplo con Formspree:
+
+      fetch('https://formspree.io/f/TU_ID', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: document.getElementById('c-name').value,
+          apellido: document.getElementById('c-last').value,
+          email: email,
+          pais: document.getElementById('c-country').value,
+          profesion: document.getElementById('c-role').value,
+          area: document.getElementById('c-area').value,
+          mensaje: msg
+        })
+      });
+      ─────────────────────────────────────────────────────────────
+    */
+
+    document.getElementById('c-success').style.display = 'block';
+  }
+
+  function submitTestimony() {
+    const name    = document.getElementById('t-name').value.trim();
+    const msg     = document.getElementById('t-msg').value.trim();
+    const consent = document.getElementById('t-consent').checked;
+
+    if (!name || !msg || !currentRating || !consent) {
+      alert('Por favor completa los campos obligatorios (*),
+selecciona una calificación y acepta la política de privacidad.');
+      return;
+    }
+
+    /*
+      ── INTEGRACIÓN ──────────────────────────────────────────────
+      Mismo patrón que el formulario de contacto.
+      Datos disponibles:
+        - t-name, t-role, t-country, t-course
+        - currentRating (número 1-5)
+        - t-msg (texto del testimonio)
+        - t-photo (checkbox: autoriza publicación)
+      ─────────────────────────────────────────────────────────────
+    */
+
+    document.getElementById('t-success').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
+
